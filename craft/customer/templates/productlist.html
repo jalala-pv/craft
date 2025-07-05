@@ -1,0 +1,86 @@
+{% extends 'navbar.html' %}
+{% block content %}
+{% load static %}
+{% load custom_filters %}
+
+
+
+<style>
+    .card {
+        transition: transform 0.6s ease, box-shadow 0.6s ease;
+    }
+
+    .card:hover {
+        transform: scale(1.05);
+        box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+    }
+</style>
+
+
+<!-- search -->
+
+<div class=" d-flex justify-content-center mb-4 mt-3">
+    <form action="{% url 'search' %}" method="post" class="d-flex">
+      {% csrf_token %}
+  <input class="form-control me-2" type="search" placeholder="Search for products" name="searchkey" aria-label="Search" style="width: 300px; height: 40px;">
+  <button class="btn" type="submit" style="height: 40px; background-color: #ff4141; padding: 10px; border: none;">
+      <i class="fa-solid fa-magnifying-glass" style="color: #f9fafb;"></i>
+  </button>
+</form>
+</div>
+
+<!-- banner -->
+<div class="mt-4">
+    {% if category == 'PaperCraft' %}
+        <img src="{% static 'image/banner_papercraft.jpg' %}" alt="" style="height: 230px; width: 1160px; margin-left: 50px; margin-right: 50px;">
+    {% elif category == 'Wooden' %}
+        <img src="{% static 'image/banner_bamboos.jpg' %}" alt="" style="height: 230px; width: 1160px; margin-left: 50px; margin-right: 50px;">
+    {% elif category == 'Jute' %}
+        <img src="{% static 'image/banner_jute.jpg' %}" alt="" style="height: 230px; width: 1160px; margin-left: 50px; margin-right: 50px;">
+    {% endif %}
+</div>
+
+
+<!-- sort -->
+
+<div class="d-flex justify-content-end align-items-center mt-5" style="margin-right: 70px;">
+    <form method="get" class="d-flex align-items-center">
+        <select name="sortby" id="sortby" class="form-select" style="width: 175px;border-radius: 30px;" onchange="this.form.submit()">
+            <option value="">Sort By:</option>
+            <option value="price_asc" {% if request.GET.sortby == 'price_asc' %}selected{% endif %}>Price:Low to High</option>
+            <option value="price_desc" {% if request.GET.sortby == 'price_desc' %}selected{% endif %}>Price:High to Low</option>
+            <option value="newest" {% if sortby == 'newest' %}selected{% endif %}>New Arrivels</option>
+        </select>
+    </form>
+</div>
+
+
+
+<!-- product list -->
+<div class="d-flex justify-content-center flex-wrap mt-2" style="gap: 30px;">
+    {% for product in products %}
+    <div class="card" style="width: 16rem; border-radius: 0%; margin-top: 10px;margin-bottom: 30px;">
+        <img src="{{ product.image.url }}" height="250px" class="card-img-top" alt="...">
+        
+        <!-- wishlist icon-->
+        <a href="{% url 'add_to_wishlist' product.id %}" class="mt-2 position-absolute top-0 end-0 m-2 text-danger" style="font-size: 30px; z-index: 10;">
+            <i class="fa-regular fa-heart fa-fade fa-xs" style="color: #fafafa;"></i>
+        </a>
+        
+        <div class="card-body">
+            <h6 class="card-title">{{ product.title }}</h6>
+
+            <p class="mt-2 mb-1" style="color: goldenrod; font-size:large;">
+                {{ product.avg_rating|to:5 }}
+            </p>
+
+            <p class="card-text" style="display: inline; margin-right: 10px;"><b style="font-size: x-large;">&#8377;{{ product.offerprice }}</b></p>
+            <s class="card-text text-secondary">&#8377;{{ product.price }}</s>
+            <a href="{% url 'pdetail' product.id %}" class="stretched-link"></a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+
+{% endblock content %}

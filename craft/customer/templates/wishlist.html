@@ -1,0 +1,44 @@
+{% extends 'navbar.html' %}
+{% block content %} 
+    {% if wishlist_items %}
+    <div class="container mt-5">
+        <h3 class="text-center" style="font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;">My Wishlist
+            ({{wishlist}})
+        </h3>   
+    <div class="table-container" style="width: 72%; margin: 0 auto;"> 
+        <table class="table mt-5">
+            <thead>
+                <tr>
+                    <th>Product Image</th>
+                    <th>Title</th>
+                    <th>Price</th>
+                    <th>Remove</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for item in wishlist_items %}
+                <tr class="align-middle">
+                    <td>
+                        <a href="{% url 'pdetail' item.product.id %}">
+                            <img src="{{ item.product.image.url }}" alt="{{ item.product.title }}" class="img-fluid" height="50px" width="50px">
+                        </a>
+                    </td>
+                    <td>{{ item.product.title }}</td>
+                    <td>&#8377; {{ item.product.offerprice }}</td>
+                    <td>
+                        <a href="{% url 'remove_from_wishlist' item.product.id %}"  class="ms-3"><i class="fa-solid fa-xmark" style="color: #00040a;"></i></a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+    {% else %}
+    <div style="display: flex; justify-content: center; align-items: center; height: 80vh;margin-top: 30px;">
+        <img src="https://i.pinimg.com/originals/f6/e4/64/f6e464230662e7fa4c6a4afb92631aed.png" class="img-fluid rounded-top" alt=""/>
+    </div>
+    
+    {% endif %}
+
+{% endblock content %}

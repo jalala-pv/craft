@@ -1,0 +1,74 @@
+{% extends 'navbar.html' %}
+{% block content %}
+
+<h2 class="text-center my-3" style="font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;">Order List ({{ orders.count }})</h2> 
+{% if messages %}
+    {% for i in messages %}
+        {% if i.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+            <div class="alert alert-success alert-dismissible fade show mt-5">
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <strong>{{i}}</strong>
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+{% if orders %}
+<div class="container mt-5 mb-5">
+    <div class="table-responsive" style="width: 100%; margin: 0 auto;">
+        <table class="table mt-5">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Products</th>
+                    <th>Title</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                    <th>Order Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in orders %}
+                <tr class="align-middle">
+                    <td>{{ i.id }}</td>
+                    <td>
+                        <a href="{% url 'pdetail' i.product.id %}">
+                            <img src="{{ i.product.image.url }}" alt="{{ i.product.title }}" class="img-fluid" height="50px" width="50px">
+                        </a>
+                    </td>
+                    <td>{{ i.product.title }}</td>
+                    <td>{{ i.quantity }}</td>
+                    <td>&#8377; {{ i.total }}</td>
+                    <td>{{ i.datatime }}</td>
+                    <td>
+                        {% if i.status == 'OrderPlaced' %}
+                        <span class="text-warning">{{ i.status }}</span>
+                        {% elif i.status == 'Shipped' %}
+                        <span class="text-info">{{ i.status }}</span>
+                        {% elif i.status == 'OutForDelivery' %}
+                        <span class="text-primary">{{ i.status }}</span>
+                        {% elif i.status == 'Delivered' %}
+                        <span class="text-success">{{ i.status }}</span>
+                        {% elif i.status == 'cancelled' %}
+                        <span class="text-danger fw-bolder">{{ i.status }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if i.status == 'OrderPlaced' %}
+                        <a href="{% url 'corder' i.id %}" onclick="return confirm('Are you sure?')" class="btn btn-outline-danger">Cancel Order</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div style="display: flex; justify-content: center; align-items: center; height: 80vh; margin-top: 30px;">
+    <img src="https://i.pinimg.com/originals/f6/e4/64/f6e464230662e7fa4c6a4afb92631aed.png" class="img-fluid rounded-top" alt="No orders found">
+</div>
+{% endif %}
+
+{% endblock content %}

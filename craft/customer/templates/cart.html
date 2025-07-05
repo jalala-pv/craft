@@ -1,0 +1,94 @@
+{% extends 'navbar.html' %}
+{% block content %}
+
+
+<!-- cart list -->
+{% if carts %}
+<div class="table-container" style="width: 92%; margin: 0 auto;">
+    <table class="table mt-5">
+        <thead>
+            <tr>
+                <th>Products</th>
+                <th>Title</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+                <th>Remove</th>
+            </tr>
+            
+        </thead>
+        <tbody>
+        {% for i in carts %}
+            <tr class="align-middle">
+                <td>
+                    <a href="{% url 'pdetail' i.product.id %}">
+                        <img src="{{ i.product.image.url }}" alt="{{ item.product.title }}" class="img-fluid" height="50px" width="50px">
+                    </a>
+                </td>
+                <td>{{i.product.title}}</td>
+                <td>&#8377; {{i.product.price}}</td>
+                <td>
+                    <div class="d-flex align-items-center">
+                        <a href="{% url 'decQuantity' i.id %}" class="btn btn-outline-secondary">-</a>
+                        <span class="mx-2">{{i.quantity}}</span>
+                        <a href="{% url 'incQuantity' i.id %}" class="btn btn-outline-secondary">+</a>
+                    </div>
+                </td>
+                <td>&#8377; {{i.total}}</td>
+                <td>
+                    <a href="{% url 'removeitem' i.id %}" class="ms-3"><i class="fa-solid fa-xmark" style="color: #00040a;"></i></a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+<!-- cart detail -->
+<div class="table-container" style="width: 60%; margin: 0 auto;">
+    <h3 class="mt-5"><b>Cart Totals</b></h3>
+    <table class="table mt-4">
+        <tbody>
+            <tr style="height: 50px;">
+                <td>Subtotal</td>
+                <td class="text-end">&#8377; {{ subtotal }}</td>
+            </tr>
+            <tr style="height: 50px;">
+                <td>Shipping Fee</td>
+                <td class="text-end">
+                    {% if shipping_fee == 0 %}
+                        Free
+                    {% else %}
+                        &#8377; {{ shipping_fee }}
+                    {% endif %}
+                </td>
+            </tr>
+            <tr style="height: 50px;">
+                <th style="font-size: larger;">Total</th>
+                <th class="text-end" style="font-size: larger;">&#8377; {{ grand_total }}</th>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<div class="mb-5" style="margin-left: 200px;">
+    <a href="{% url 'add_address' %}" class="btn text-light d-flex justify-content-center" style="background-color: #ff4141;width: 270px;border-radius: 0px;height: 50px;margin-left: 50px;margin-top: 60px;">
+        <b class="ms-2">PROCEED TO CHECKOUT</b>
+    </a>
+</div>
+
+
+{% else %}
+<div style="display: flex; justify-content: center; align-items: center; height: 80vh;" class="mb-5">
+    <img src="https://i.pinimg.com/736x/ae/8a/c2/ae8ac2fa217d23aadcc913989fcc34a2.jpg" class="img-fluid rounded-top" alt=""/>
+</div>
+
+
+
+{% endif %}
+
+
+
+{% endblock content %}

@@ -1,0 +1,70 @@
+{% extends 'navbar.html' %}
+
+{% block content %}
+
+  <h2 class="d-flex justify-content-center align-items-center mt-5" style="font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;">Delivery Address</h2>
+  
+  <form method="POST" style="margin: 40px 180px 40px 180px;">
+    {% csrf_token %}
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            {{ form.name }}
+        </div>
+        <div class="col-md-6">
+            {{ form.phone_number }}
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            {{ form.pincode }}
+        </div>
+        <div class="col-md-6">
+            {{ form.locality }}
+        </div>
+    </div>
+
+
+    <div class="row mb-3">
+        <div class="col-md-12">
+            {{ form.address }}
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            {{ form.district }}
+        </div>
+        <div class="col-md-6">
+            {{ form.state }}
+        </div>
+    </div>
+
+
+<div class="row mb-3">
+    <div class="col-md-12">
+        <label style="color: rgb(148, 150, 150);" class="mb-3">Address Type</label><br>
+        <div class="form-check form-check-inline ms-5">
+            <input type="radio" name="address_type" value="home" class="form-check-input" id="home" required>
+            <label for="home" class="form-check-label">Home (All Day Delivery)</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input type="radio" name="address_type" value="work" class="form-check-input" id="work" required>
+            <label for="work" class="form-check-label">Work (Delivery between 10AM - 5PM)</label>
+        </div>
+    </div>
+</div>
+
+    <div class="mb-5">
+        <button type="submit" class="btn text-light d-flex justify-content-center" style="background-color: #ff4141;width: 270px;border-radius: 0px;height: 50px;margin-top: 60px;">
+            <b class="ms-2">SAVE AND DELIVERY HERE</b>
+        </button>
+    </div>
+
+
+</form>
+
+
+  <br>
+{% endblock content %}

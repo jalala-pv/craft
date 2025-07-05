@@ -1,0 +1,46 @@
+{% extends 'navbar.html' %}
+
+{% block content %}
+    <div class="d-flex justify-content-center align-items-center" style="height: 90vh; background-color: #fde1ff">
+        <div class="p-3 row" style="height: 400px; width: 500px; background-color: white; border-radius: 0px; position: relative;">
+            
+            {% if messages %}
+                {% for i in messages %}
+                    {% if i.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                        <div class="alert alert-success alert-dismissible fade show" style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); z-index: 10;">
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            <strong>{{i}}</strong>
+                        </div>
+                    {% endif %}
+                    {% if i.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                        <div class="alert alert-danger alert-dismissible fade show" style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); z-index: 10;">
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            <strong>{{i}}</strong>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+
+            <h3 class="mt-5 ms-3 me-3" style="font-weight:600;">Login</h3>
+            <form action="" method="post">
+                {% csrf_token %}
+                <div class="mb-3 ms-3 me-3" style="width: 410px; height: 50px; border-radius: 0%;">
+                    <p class="text-center text-danger">{{ form.username.error }}</p>
+                    {{ form.username }}
+                </div>
+                <div class="mb-3 ms-3 me-3" style="width: 410px; height: 50px; border-radius: 0%;">
+                    <p class="text-center text-danger">{{ form.password.error }}</p>
+                    {{ form.password }}
+                </div>
+                <div class="mb-3 ms-3 me-3">
+                    <button class="btn text-light d-flex justify-content-center" style="width: 410px; height: 50px; border-radius: 0%; background-color: #ff4141; font-size: larger;">Continue</button>
+                </div>
+                <p class="ms-3 me-3 mb-5 text-secondary">
+                    Create an account? 
+                    <a href="{% url 'registration' %}" style="text-decoration: none; color: #ff4141; font-weight: 700;">Click here</a>
+                    <a href="{% url 'password_reset' %}" style="color: #ff4141; font-weight: 700; text-decoration: none; margin-left: 45px;">Forgot password?</a>
+                </p>
+            </form>
+        </div>
+    </div>
+{% endblock content %}

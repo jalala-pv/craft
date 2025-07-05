@@ -1,0 +1,136 @@
+{% extends 'navbar.html' %}
+{% block content %}
+{% load static %}
+{% load custom_filters %}
+
+
+<style>
+    .card {
+        transition: transform 0.6s ease, box-shadow 0.6s ease;
+    }
+
+    .card:hover {
+        transform: scale(1.05); 
+        box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2); 
+    }
+
+
+    .newcl {
+    display: inline-block; 
+    position: relative;   
+    padding-bottom: 5px;   
+}
+
+.newcl::after {
+    content: '';       
+    position: absolute; 
+    bottom: 0;            
+    left: 50%;            
+    width: 40%;        
+    height: 4px;          
+    background-color: black;
+    transform: translateX(-50%); 
+    margin: -10px;
+}
+</style>
+
+<!-- scroll -->
+<div class="overflow-hidden" style="background-color: #fde1ff; padding: 10px; white-space: nowrap;">
+    <marquee behavior="scroll" direction="left" style="font-size: 19px; color: #333;">
+        🎉 Our Anniversary Special Offer – Limited Time Only! Don't Miss Out! 🎉 |
+        🛍️ Special Discounts on New Arrivals! | 💥 Limited Stock, Hurry Up!
+    </marquee>
+</div>
+
+<!-- banner -->
+<div class="d-flex align-items-center" style="background: linear-gradient(to top,white, #fde1ff);">
+    <div class="col" style="margin-left: 65px;">
+        <h6 style="font-size: 20px; font-weight: bold;">NEW ARRIVALS ONLY</h6><br>
+        <h1 style="font-size: 60px; font-weight: bold; font-stretch: expanded;">
+            new
+            <img src="{% static 'image/hand_icon.png' %}" alt="" style="height: 70px;"><br>
+            collections<br>for everyone
+        </h1>
+    </div>
+    <div class="col" style="margin-left: 200px;">
+        <img src="{% static 'image/hero_image.png' %}" alt="" style="height: 400px;" class="mt-5">
+    </div>
+</div>
+
+
+
+
+<!-- new collections -->
+
+<div style="text-align: center;">
+    <h2 class="text-center mt-5 newcl" style="font-weight: 600;">NEW COLLECTIONS</h2>
+</div>
+<div class="d-flex justify-content-center flex-wrap mt-5" style="gap: 30px;">
+    {% for i in latest_products %}
+    <div class="card" style="width: 16rem; border-radius: 0%; margin-top: 50px;">
+        
+        <img src="{{i.image.url}}" height="250px" class="card-img-top" alt="...">
+        <span class="badge bg-dark position-absolute top-0 start-0 m-2" style="z-index: 10;">New</span>
+        
+        <a href="{% url 'add_to_wishlist' i.id %}" class="mt-2 position-absolute top-0 end-0 m-2 text-danger" style="font-size: 30px; z-index: 10;">
+            <i class="fa-regular fa-heart fa-fade fa-xs" style="color: #fafafa;"></i>
+        </a>
+        <div class="card-body">
+            <h6 class="card-title">{{i.title}}</h6>
+            <p class="mt-2 mb-1" style="color: goldenrod; font-size:large;">
+                {{ i.avg_rating|to:5 }} 
+            </p>
+            <p class="card-text" style="display: inline; margin-right: 10px;">
+                <b style="font-size: x-large;">&#8377;{{i.offerprice}}</b>
+            </p>
+            <s class="card-text text-secondary">&#8377;{{i.price}}</s>
+            <a href="{% url 'pdetail' i.id %}" class="stretched-link"></a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+
+<!-- offers -->
+<div class="d-flex align-items-center" 
+    style="background: linear-gradient(to top, white, #fbe8fd); margin-left: 200px; margin-right: 200px; margin-top: 100px; height: 200px;">
+    <div class="col">
+        <p style="font-stretch: expanded; margin-left: 40px; font-size: 35px; font-weight: 600;">
+            Exclusive <br> Offers For You
+        </p>
+        <button class="btn text-light justify-content-center" style="background-color: #ff4141; margin-left: 40px; width: 110px;">Check now</button>
+    </div>
+    <div class="col" style="margin-left: 200px;">
+        <img src="{% static 'image/shop2.png' %}" alt="" style="height: 400px;padding-bottom: 160px;" class="mt-4">
+    </div>
+</div>
+
+
+<!-- products-->
+<div class="d-flex justify-content-center flex-wrap mt-5 mb-5" style="gap: 30px;">
+    {% for i in products %}
+    <div class="card" style="width: 16rem; border-radius: 0%; margin-top: 50px; position: relative;">
+        <img src="{{i.image.url}}" height="250px" class="card-img-top" alt="...">
+    
+        <a href="{% url 'add_to_wishlist' i.id %}" class="mt-2 position-absolute top-0 end-0 m-2 text-danger" style="font-size: 30px; z-index: 10;">
+            <i class="fa-regular fa-heart fa-fade fa-xs" style="color: #fafafa;"></i>
+        </a>
+        
+        <div class="card-body">
+            <h6 class="card-title">{{i.title}}</h6>
+            <p class="mt-2 mb-1" style="color: goldenrod; font-size:large;">
+                {{ i.avg_rating|to:5 }}
+            </p>
+
+            <p class="card-text" style="display: inline; margin-right: 10px;">
+                <b style="font-size: x-large;">&#8377;{{i.offerprice}}</b>
+            </p>
+            <s class="card-text text-secondary">&#8377;{{i.price}}</s>
+            <a href="{% url 'pdetail' i.id %}" class="stretched-link"></a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+
+{% endblock content %}
