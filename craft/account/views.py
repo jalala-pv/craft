@@ -9,21 +9,29 @@ from django.contrib.messages.views import SuccessMessageMixin
 
 
 
+from django.contrib import messages
+
 class LoginView(FormView):
-    template_name='login.html'
-    form_class=LoginForm
-    def post(self,request):
-        form=LoginForm(data=request.POST)
+    template_name = 'login.html'
+    form_class = LoginForm
+
+    def post(self, request):
+        form = LoginForm(data=request.POST)
         if form.is_valid():
-            uname=form.cleaned_data.get('username')
-            pswd=form.cleaned_data.get('password')
-            user=authenticate(request,username=uname,password=pswd)
+            uname = form.cleaned_data.get('username')
+            pswd = form.cleaned_data.get('password')
+            user = authenticate(request, username=uname, password=pswd)
             if user:
-                login(request,user)
+                login(request, user)
+                
                 return redirect('shop')
             else:
-                return redirect('login')
-        return render(request,'login.html',{'form':form})
+                messages.error(request, "Invalid username or password.")  # ✅ Show error
+        else:
+            messages.error(request, "Please correct the errors below.")  # Optional
+
+        return render(request, 'login.html', {'form': form})
+
         
 
         
@@ -44,9 +52,3 @@ class LogOutView(View):
         logout(request)
         return redirect('shop')
     
-class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
-    template_name = 'password_reset.html'
-    email_template_name = 'password_reset_email.html'
-    subject_template_name = 'registration/password_reset_subject.txt'
-    success_message = "We've emailed you instructions for setting your password if an account exists with the email you entered. You should receive them shortly. If you don't receive an email, please make sure you've entered the address you registered with, and check your spam folder."
-    success_url = reverse_lazy('login')
