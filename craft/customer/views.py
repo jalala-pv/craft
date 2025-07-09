@@ -36,13 +36,6 @@ class ShopView(ListView):
         latest_products = Productss.objects.all().order_by('-created_at')[:8]
         context['latest_products'] = latest_products
 
-        for product in context['latest_products']:
-            avg_rating = ProductReview.objects.filter(product=product).aggregate(Avg('rating'))['rating__avg']
-            product.avg_rating = avg_rating if avg_rating is not None else 0
-    
-        for product in context['products']:
-            avg_rating = ProductReview.objects.filter(product=product).aggregate(Avg('rating'))['rating__avg']
-            product.avg_rating = avg_rating if avg_rating is not None else 0
         
         return context
     
@@ -71,9 +64,7 @@ class ProductListView(ListView):
         context = super().get_context_data(**kwargs)
         category = self.kwargs.get('cat')
         context['category'] = category
-        for product in context['products']:
-            avg_rating = ProductReview.objects.filter(product=product).aggregate(Avg('rating'))['rating__avg']
-            product.avg_rating = avg_rating if avg_rating is not None else 0
+        
         context['sortby'] = self.request.GET.get('sortby', '')
         return context
 
@@ -89,20 +80,8 @@ class ProductDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         product = self.get_object()
 
-        reviews = product.reviews.all()
-
-        avg_rating = reviews.aggregate(Avg('rating'))['rating__avg']
-
-        context['reviews'] = reviews
-        context['avg_rating'] = avg_rating if avg_rating else 0 
-
         related_products = Productss.objects.filter(category=product.category).exclude(id=product.id)[:4]
-        
-        for related_product in related_products:
-            related_reviews = related_product.reviews.all()
-            related_avg_rating = related_reviews.aggregate(Avg('rating'))['rating__avg']
-            related_product.avg_rating = related_avg_rating if related_avg_rating else 0 
-
+    
         context['related_products'] = related_products
 
         return context
@@ -111,30 +90,12 @@ class ProductDetailView(DetailView):
 def product_detail(request, id):
     product = get_object_or_404(Productss, pk=id)
     
-    avg_rating = ProductReview.objects.filter(product=product).aggregate(Avg('rating'))['rating__avg'] or 0
-    
-    form = ProductReviewForm() 
-    
     return render(request, 'productdetail.html', {
         'product': product,
-        'avg_rating': avg_rating,
         'form': form,
         'category': product.category, 
     })
 
-@signin_required
-def view_reviews(request, pk):
-    product = get_object_or_404(Productss, pk=pk)
-    reviews = ProductReview.objects.filter(product=product)
-    # reply_form = ReviewReplyForm()
-
-    if request.method == 'POST':
-        if 'delete_review' in request.POST:
-            review_id = request.POST.get('delete_review')
-            review = get_object_or_404(ProductReview, id=review_id)
-            if request.user.is_superuser:
-                review.delete()
-                return redirect('view_reviews', pk=pk)
 
        
         # if 'reply_to_review' in request.POST:
@@ -156,64 +117,11 @@ def view_reviews(request, pk):
 
     return render(request, 'view_reviews.html', {
         'product': product,
-        'reviews': reviews,
+        
         # 'reply_form': reply_form,
     })
 
 
-
-@signin_required
-def add_review(request, id):
-    product = get_object_or_404(Productss, id=id)
-    has_delivered_order = Orders.objects.filter(
-        user=request.user,
-        product=product,
-        status='Delivered'
-    ).exists()
-    
-    if not has_delivered_order:
-        messages.error(request, "You can only review products you have bought and received.")
-        return redirect('pdetail', id=product.id)
-    
-    if request.method == 'POST':
-        form = ProductReviewForm(request.POST)
-        if form.is_valid():
-            review = form.save(commit=False)
-            review.user = request.user
-            review.product = product
-            review.save()
-            messages.success(request, "Your review has been added successfully!")
-            return redirect('pdetail', id=product.id)
-    else:
-        form = ProductReviewForm()
-    
-    return render(request, 'add_review.html', {'form': form, 'product': product})
-
-
-@signin_required
-def update_review(request, review_id):
-    review = get_object_or_404(ProductReview, id=review_id)
-    if not review.product.category:
-        return redirect('shop')
-    if request.method == 'POST':
-        form = ProductReviewForm(request.POST, instance=review)
-        if form.is_valid():
-            form.save()
-            return redirect(reverse('pdetail', kwargs={'id': review.product.id}))
-    else:
-        form = ProductReviewForm(instance=review)
-
-    return render(request, 'add_review.html', {'form': form, 'review': review})
-
-
-@signin_required
-def delete_review(request, id):
-    review = get_object_or_404(ProductReview, id=id, user=request.user)
-    product_id = review.product.id
-    if request.method == 'POST':
-        review.delete()
-        return redirect('pdetail', id=product_id)
-    return render(request, 'add_review.html', {'review': review})
 
 @signin_required
 def addToCart(request,*args,**kwargs):

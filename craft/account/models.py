@@ -33,25 +33,6 @@ class Cart(models.Model):
         super().save(*args, **kwargs)
 
 
-class ProductReview(models.Model):
-    product = models.ForeignKey(Productss, on_delete=models.CASCADE, related_name='reviews')
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    rating = models.IntegerField(choices=[(i, str(i)) for i in range(1, 6)], default=5) 
-    comment = models.TextField(max_length=500, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.user.username} - {self.product.title} - {self.rating}"
-    
-
-class ReviewReply(models.Model):
-    review = models.OneToOneField(ProductReview, on_delete=models.CASCADE, related_name='reply')
-    admin = models.ForeignKey(User, on_delete=models.CASCADE)
-    reply_text = models.TextField(max_length=500)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"Reply to {self.review.user.username}'s review"
     
 class Wishlist(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
