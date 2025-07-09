@@ -57,9 +57,3 @@ class RegistrationForm(UserCreationForm):
             }
 
 
-class PasswordResetForm(forms.Form):
-    email = forms.EmailField(max_length=254, widget=forms.EmailInput(attrs={
-        'class': 'form-control',
-        'placeholder': 'Enter your email address',
-        'style': 'width: 100%; height: 50px; border-radius: 0;'
-    }))
