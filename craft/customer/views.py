@@ -87,42 +87,6 @@ class ProductDetailView(DetailView):
         return context
 
 
-def product_detail(request, id):
-    product = get_object_or_404(Productss, pk=id)
-    
-    return render(request, 'productdetail.html', {
-        'product': product,
-        'form': form,
-        'category': product.category, 
-    })
-
-
-       
-        # if 'reply_to_review' in request.POST:
-        #     review_id = request.POST.get('reply_to_review')
-        #     review = get_object_or_404(ProductReview, id=review_id)
-            
-        #     existing_reply = ReviewReply.objects.filter(review=review).first()
-        #     if existing_reply:
-        #         messages.error(request, "A reply already exists for this review.")
-        #         return redirect('view_reviews', pk=pk)
-
-            # reply_form = ReviewReplyForm(request.POST)
-            # if reply_form.is_valid() and request.user.is_superuser:
-            #     reply = reply_form.save(commit=False)
-            #     reply.review = review
-            #     reply.admin = request.user
-            #     reply.save()
-            #     return redirect('view_reviews', pk=pk)
-
-    return render(request, 'view_reviews.html', {
-        'product': product,
-        
-        # 'reply_form': reply_form,
-    })
-
-
-
 @signin_required
 def addToCart(request,*args,**kwargs):
     try:
@@ -153,7 +117,7 @@ class CartListView(ListView):
         carts = self.get_queryset()
 
         subtotal = sum(cart.total for cart in carts)
-        if subtotal > 5000:
+        if subtotal > 500:
             shipping_fee = 0
         else:
             shipping_fee = sum(
@@ -245,7 +209,7 @@ def placeorder(request):
                 return redirect('cartlist')
 
             cart.delete()
-            subject = 'Craft.io Order Confirmation'
+            subject = 'Craft  Order Confirmation'
             html_content = format_html(
                 f"""
                 <p>Hi <strong>{request.user.username}</strong>,</p>
@@ -326,7 +290,7 @@ def contact(request):
             send_mail(
                 subject,
                 full_message,
-                'tcsahla@gmail.com',
+                'pvjalala@gmail.com',
                 [request.user.email],
             )
             messages.success(request, 'Your message has been sent successfully!')
